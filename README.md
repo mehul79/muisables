@@ -1,135 +1,87 @@
-# Turborepo starter
+# 🎧 FOSSify
 
-This Turborepo starter is maintained by the Turborepo core team.
+**FOSSify** is a free, open‑source, Spotify‑style music streaming SaaS that dynamically ingests, stores, and streams audio content without any cost to users. Leveraging web scrapers and crawlers, FOSSify automatically discovers and adds new tracks to its library daily, while a built‑in recommendation engine curates personalized playlists in real time.
 
-## Using this example
+---
 
-Run the following command:
+## 🚀 Project Overview
 
-```sh
-npx create-turbo@latest
-```
+**FOSSify** empowers users to:
 
-## What's inside?
+- 🔍 Discover and play any song for free—no subscriptions or payment gateways required.
+- ⚡ Enjoy seamless, chunked audio streaming (HLS/DASH) for near‑instant playback.
+- 🧠 Benefit from intelligent, music‑based recommendations that learn user preferences.
+- 📈 Experience a continuously growing library via automated scraping jobs.
 
-This Turborepo includes the following packages/apps:
+This README outlines the core MVP features, differentiators, high‑level architecture, tech stack, and contributing guidelines.
 
-### Apps and Packages
+---
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## 🎯 MVP & Differentiator Features
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+| **Category**              | **Feature**                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| **Core Streaming**        | — Chunked HLS/DASH playback for smooth, partial loading (like Netflix).                   |
+| **Dynamic Ingestion**     | — Daily cron jobs scrape the web for new tracks and metadata.                             |
+| **Recommendation Engine** | — Content‑based and collaborative filtering using audio features (tempo, MFCC, spectral). |
+| **Open & Free**           | — No paywalls or subscriptions; fully open source under an MIT license.                   |
+| **Modular Architecture**  | — Separate microservices for scraping, recommendation, and streaming for easy scaling.    |
 
-### Utilities
+> **Why FOSSify?**  
+> Unlike commercial platforms, FOSSify is built for transparency, customization, and community collaboration. You can self‑host, inspect the code, or contribute enhancements.
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 🔄 Overall System Flow
 
-### Build
+1. 🔐 **User Authentication**: Users sign up or log in via OAuth (Better‑Auth).
+2. 🌐 **Frontend Request**: Next.js UI fetches playlists and search queries.
+3. 🎯 **Track Search & Import**: User searches for a song → Express API forwards request to Scraper Service → Python scrapers locate, download, and upload audio to R2 → metadata saved in Postgres.
+4. 🎵 **Streaming**: User selects a track → client fetches HLS playlist (.m3u8) from Express → audio served in segments from Cloudflare R2.
+5. 🤖 **Recommendations**: On playback, Recommendation Service (FastAPI) analyzes user history + audio features → returns personalized queue.
+6. 🛠️ **Cron Automation**: Cloud Scheduler triggers daily jobs to update library and retrain recommendation models.
 
-To build all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 🛠️ Tech Stack
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+**Framework & UI**
+- ⚡ **TurboRepo** – Monorepo for unified build & deployment.
+- 💻 **Next.js + Tailwind + shadcn/ui** – Fast, responsive frontend with modern UI.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+**Backend & APIs**
+- 🚀 **Express.js (TypeScript)** – API gateway for auth, search, and streaming.
+- 🔐 **Better‑Auth (OAuth)** – Secure user auth & session management.
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+**Database & Storage**
+- 🐘 **PostgreSQL + Prisma** – Stores users, tracks, metadata, and playlists.
+- ☁️ **Cloudflare R2** – S3-compatible object storage for audio + HLS.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+**Automation & Scraping**
+- 🕷️ **Python (Scrapy / Playwright)** – Scrapes and ingests tracks daily.
+- ⏰ **Redis + BullMQ / Celery + Cloud Scheduler** – Handles queues & cron jobs.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+**AI/ML & Recommendations**
+- 🤖 **FastAPI + librosa + scikit-learn** – Powers real-time music recommendations.
 
-### Develop
+**DevOps**
+- 🐳 **Docker** – Containerized microservices for consistent deployment.
 
-To develop all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 📝 Author’s Notes
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+FOSSify is my passion project aimed at democratizing music streaming. By combining open‑source principles with cutting‑edge web and audio technologies, the goal is to create a self‑service platform that anyone can deploy, customize, and extend.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+I intentionally chose a microservices approach to ensure each part (scraping, streaming, recommendations) can evolve independently and scale as usage grows.
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## 🤝 Contributing
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Contributions—big or small—are welcome and appreciated! Whether it’s fixing bugs, improving docs, enhancing the UI, or optimizing performance, your help makes FOSSify better for everyone.
 
-### Remote Caching
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+Thank you for checking out **FOSSify**.  
+Let's build a truly free and open music ecosystem together! 🎶
