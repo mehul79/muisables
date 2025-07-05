@@ -81,7 +81,6 @@ I intentionally chose a microservices approach to ensure each part (scraping, st
 
 Contributions—big or small—are welcome and appreciated! Whether it’s fixing bugs, improving docs, enhancing the UI, or optimizing performance, your help makes FOSSify better for everyone.
 
-Please read [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
 Thank you for checking out **FOSSify**.  
 Let's build a truly free and open music ecosystem together! 🎶
