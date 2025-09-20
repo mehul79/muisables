@@ -1,13 +1,12 @@
-import {Button} from "@repo/ui/button"
-
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <main>
+    <div>
       <h1>Welcome to the Frontend App!</h1>
-      <Button appName="Frontend" className="border p-2 ">
+      <Button variant="destructive" >
         Click Me
       </Button>
-    </main>
+    </div>
   )
 }
